@@ -1,0 +1,4 @@
+﻿  lab1.cpp
+c:\users\alexey\source\repos\lab1\lab1\lab1.cpp(76): warning C4101: i: неиспользованная локальная переменная
+  lab1.vcxproj -> C:\Users\Alexey\source\repos\lab1\Debug\lab1.exe
+  lab1.vcxproj -> C:\Users\Alexey\source\repos\lab1\Debug\lab1.pdb (Partial PDB)
