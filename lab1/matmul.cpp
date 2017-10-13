@@ -1,12 +1,9 @@
-// lab1.cpp: определяет точку входа для консольного приложения.
-//
+// matmul.cpp: определяет точку входа для консольного приложения.
 
 #include "stdafx.h"
 #include <iostream>
 #include <vector>
-#include <locale.h>
 #include <string>
-
 #include <Windows.h>
 #include <WinUser.h>
 
@@ -52,7 +49,7 @@ matX inputMatrix(int m, int n)
 				std::cin >> in_num;
 				try
 				{
-					if (!isdigit(in_num[0]))
+					if (!isdigit(in_num[0]) && in_num[0] != '-' || !isdigit(in_num[1]) && in_num[0] == '-')
 					{
 						throw 1;
 					}
@@ -73,7 +70,7 @@ matX inputMatrix(int m, int n)
 	std::cout << mat[0][0];
 	return mat;
 }
-
+// функция ввода размерности матриц
 int inputDim()
 {
 	int m;
@@ -92,23 +89,12 @@ int inputDim()
 
 			const char * c_str = in_num.c_str();
 			m = atoi(c_str);
+			successful = true;
 		}
+
 		catch (int i)
 		{
 			if (i == 1) std::cout << "Type error! Enter integer number" << std::endl;
-			continue;
-		}
-		try
-		{
-			if (m < 1)
-			{
-				throw 2;
-			}
-			successful = true;
-		}
-		catch (int i)
-		{
-			if (i == 2) std::cout << "Dimension error! Enter positive number" << std::endl;
 			continue;
 		}
 	}
@@ -121,7 +107,7 @@ void showMat(int m, int n, matX mat)
 	for (int i = 0; i < m; i++)
 	{
 		for (int j = 0; j < n; j++)
-			std::cout << mat[i][j] << "   ";
+			std::cout << mat[i][j] << "    ";
 		std::cout << std::endl;
 	}
 }
