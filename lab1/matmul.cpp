@@ -12,40 +12,28 @@
 #include <WinUser.h>
 using namespace concurrency;
 
-void MultiplyMatrix(int m, int n, int p) {
-	double aMatrix[] = { 1.5, 4.1, 2.6, 5.2, 3.3, 6.9 };
-	double bMatrix[] = { 7.4, 8.3, 9.5, 10.1, 11.22, 12.213 };
-	double productMatrix[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-	array_view<double, 2> a(m, n, aMatrix);
-	array_view<double, 2> b(n, p, bMatrix);
-	array_view<double, 2> product(m, p, productMatrix);
-
-	parallel_for_each(
-		product.extent,
-		[=](index<2> idx) restrict(amp) {
-		int row = idx[0];
-		int col = idx[1];
-		for (int inner = 0; inner < 2; inner++) {
-			product[idx] += a(row, inner) * b(inner, col);
-		}
-	}
-	);
-
-	product.synchronize();
-
-	for (int row = 0; row < m; row++) {
-		for (int col = 0; col < p; col++) {
-			//std::cout << productMatrix[row*3 + col] << "  ";  
-			std::cout << product(row, col) << "  ";
-		}
-		std::cout << "\n";
-	}
-}
-
-
 
 typedef std::vector< std::vector<double> > matX;
+
+matX multiplyMatrix(int m, int n, int p, matX matA, matX matB) {
+	matX matC(m, std::vector<double>(p));
+
+	for (int i = 0; i < m; i++)
+	{
+		for (int j = 0; j < p; j++)
+		{
+			matC[i][j] = 0;
+			for (int k = 0; k < n; k++)
+			{
+				matC[i][j] += matA[i][k] * matB[k][j];
+				
+			}
+		}
+	}
+	std::cout << "===" << matC[0][0] << std::endl;
+	return matC;
+}
+
 
 matX inputMatrix(int m, int n)
 {
@@ -79,16 +67,29 @@ matX inputMatrix(int m, int n)
 					continue;
 				}
 			}
-		};
-	};
+		}
+	}
 	std::cout << "Your matrix" << std::endl;
 	std::cout << mat[0][0];
 	return mat;
 }
 
+void showMat(int m, int n, matX mat)
+{
+	for (int i = 0; i < m; i++)
+	{
+		for (int j = 0; j < n; j++)
+			std::cout << mat[i][j] << "   ";
+		std::cout << std::endl;
+	}
+}
+
 int main()
 {
 	int m, n, p;
+	matX matA;
+	matX matB;
+	matX matC;
 	std::cout << "Enter dimensions of two matrices (m, n) and (n, p):" << "\n";
 	std::cout << "m = ";
 	std::cin >> m;
@@ -101,15 +102,22 @@ int main()
 
 
 	std::cout << "Enter first matrix" << std::endl;
-	matX matA = inputMatrix(m, n);
+	matA = inputMatrix(m, n);
 
 	std::cout << "Enter second matrix" << std::endl;
-	matX matB = inputMatrix(n, p);
+	matB = inputMatrix(n, p);
 
+	matC = multiplyMatrix(m, n, p, matA, matB);
 
+	std::cout << "Matrix A:" << std::endl;
+	showMat(m, n, matA);
 
+	std::cout << "Matrix B:" << std::endl;
+	showMat(n, p, matB);
 
-	MultiplyMatrix(m, n, p);
+	std::cout << "The result of multiplying:" << std::endl;
+	showMat(m, p, matC);
+	
 	std::cout << "Press Space to exit!";
 	
 	while (1) {
