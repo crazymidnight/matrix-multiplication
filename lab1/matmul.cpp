@@ -5,16 +5,16 @@
 #include <iostream>
 #include <vector>
 #include <locale.h>
-#include <amp.h>  
 #include <string>
 
 #include <Windows.h>
 #include <WinUser.h>
-using namespace concurrency;
 
 
+// объявления типа матрицы
 typedef std::vector< std::vector<double> > matX;
 
+// функция перемножения матриц
 matX multiplyMatrix(int m, int n, int p, matX matA, matX matB) {
 	matX matC(m, std::vector<double>(p));
 
@@ -34,7 +34,7 @@ matX multiplyMatrix(int m, int n, int p, matX matA, matX matB) {
 	return matC;
 }
 
-
+// функция ввода матрицы
 matX inputMatrix(int m, int n)
 {
 	double num;
@@ -74,6 +74,48 @@ matX inputMatrix(int m, int n)
 	return mat;
 }
 
+int inputDim()
+{
+	int m;
+	std::string in_num;
+	bool successful;
+	successful = false;
+	while (!successful)
+	{
+		try
+		{
+			std::cin >> in_num;
+			if (!isdigit(in_num[0]))
+			{
+				throw 1;
+			}
+
+			const char * c_str = in_num.c_str();
+			m = atoi(c_str);
+		}
+		catch (int i)
+		{
+			if (i == 1) std::cout << "Type error! Enter integer number" << std::endl;
+			continue;
+		}
+		try
+		{
+			if (m < 1)
+			{
+				throw 2;
+			}
+			successful = true;
+		}
+		catch (int i)
+		{
+			if (i == 2) std::cout << "Dimension error! Enter positive number" << std::endl;
+			continue;
+		}
+	}
+	return m;
+}
+
+// функция вывода матрицы
 void showMat(int m, int n, matX mat)
 {
 	for (int i = 0; i < m; i++)
@@ -90,15 +132,18 @@ int main()
 	matX matA;
 	matX matB;
 	matX matC;
+
+	
 	std::cout << "Enter dimensions of two matrices (m, n) and (n, p):" << "\n";
+	
 	std::cout << "m = ";
-	std::cin >> m;
+	m = inputDim();
 	std::cout << "n = ";
-	std::cin >> n;
+	n = inputDim();
 	std::cout << "p = ";
-	std::cin >> p;
-	std::cout << "Ok!" << "\n";
-	std::cout << m << ", "<< n << ", " << p << "\n";
+	p = inputDim();
+	std::cout << "Ok!" << std::endl;
+	std::cout << m << ", "<< n << ", " << p << std::endl;
 
 
 	std::cout << "Enter first matrix" << std::endl;
